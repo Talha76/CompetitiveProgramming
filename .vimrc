@@ -1,10 +1,12 @@
 " nmap <F6> :NERDTreeToggle<CR>
 nnoremap <silent> <expr> <F5> g:NERDTree.IsOpen() ? "\:NERDTreeClose<CR>" : bufexists(expand('%')) ? "\:NERDTreeFind<CR>" : "\:NERDTree<CR>"
 
+:autocmd BufNewFile *.cpp 0r ~/template.cpp
+
 set nocompatible              " be iMproved, required
 filetype off                  " required
 syntax on
-" set relativenumber
+set relativenumber
 
 set mouse=a
 set number
@@ -54,13 +56,14 @@ Plugin 'vim-scripts/a.vim'
 Plugin 'git://git.wincent.com/command-t.git'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 if !has('nvim')
-  Plugin 'ycm-core/YouCompleteMe'
+"  Plugin 'ycm-core/YouCompleteMe'
 endif
 Plugin 'gruvbox-community/gruvbox'
 Plugin 'vim-utils/vim-man'
 Plugin 'sainnhe/gruvbox-material'
 Plugin 'phanviet/vim-monokai-pro'
 Plugin 'ajh17/VimCompletesMe'
+Plugin 'alvan/vim-closetag'
 
 " Color Schemes
 Plugin 'tomasr/molokai'
@@ -102,4 +105,7 @@ call plug#begin()
 Plug 'searleser97/cpbooster.vim'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'tribela/vim-transparent'
+Plug 'ycm-core/YouCompleteMe'
+Plug 'jiangmiao/auto-pairs'
 call plug#end()
+
