@@ -179,5 +179,108 @@
 		"name": "Chef and Circles - Problems",
 		"notes": "1. If your idea is correct, and you have no idea why\nis it getting wa, then recode.\n2. Learnt how many segments contain a point",
 		"tags": []
+	},
+	{
+		"_id": "2c7dc907-4d3f-4fb6-b276-0b915136d2b9",
+		"code": "",
+		"date": "2022-12-01T13:23:40.818Z",
+		"difficulty": 1400,
+		"folder": "codeforces",
+		"link": "https://codeforces.com/problemset/problem/1520/E",
+		"name": "Arranging The Sheep",
+		"notes": "Stupid mistake.\nShould've taken less time",
+		"tags": [
+			"greedy",
+			"math"
+		]
+	},
+	{
+		"_id": "f8956bf9-fa38-482b-9b6a-38f78a3dfa49",
+		"code": "int main() {\n  int n;\n  cin >> n;\n  vector<LL> a(n), b(n);\n  for(auto &i : a)\n    cin >> i;\n  for(auto &i : b)\n    cin >> i;\n\n  LL cnt = 0;\n  for(int i = 0; i < n; i++)\n    cnt += a[i] * b[i];\n\n  LL ans, tmp1, tmp2;\n  ans = cnt;\n  for(int i = 0; i < n; i++) {\n    tmp1 = tmp2 = cnt;\n    for(int l = i, r = i + 1; ~l and r < n; l--, r++) {\n      tmp1 -= a[l] * b[l] + a[r] * b[r];\n      tmp1 += a[l] * b[r] + a[r] * b[l];\n      ans = max(ans, tmp1);\n    }\n    for(int l = i - 1, r = i + 1; ~l and r < n; l--, r++) {\n      tmp2 -= a[l] * b[l] + a[r] * b[r];\n      tmp2 += a[l] * b[r] + a[r] * b[l];\n      ans = max(ans, tmp2);\n    }\n  }\n\n  cout << ans;\n\n  return 0;\n}",
+		"date": "2022-12-06T06:13:03.139Z",
+		"difficulty": 1600,
+		"folder": "Educational",
+		"link": "https://codeforces.com/problemset/problem/1519/D",
+		"name": "Maximum Sum of Products",
+		"notes": "New Technique",
+		"tags": [
+			"brute force",
+			"dp",
+			"implementation",
+			"math",
+			"two pointers"
+		]
+	},
+	{
+		"_id": "5c4cacdc-d477-4d0f-84b6-beb13117a16a",
+		"code": "#include \"bits/stdc++.h\"\n#define all(v) v.begin(), v.end()\n#ifdef MUSHFIQ_DEBUG\n#include \"dbg.h\"\n#else\n#define dbg(...) {}\n#endif\nusing namespace std;\n\nvoid magic() {\n  string s; int k;\n  cin >> s >> k;\n\n  int n = s.size();\n  vector<vector<int>> pos(10);\n  for(int i = 0; i < n; i++)\n    pos[s[i] - '0'].push_back(i);\n\n  int first = 1, l = 0, i, cnt = 0, remain = n - k;\n  while(k and l < n and cnt < remain) {\n    bool f = false;\n    for(i = first; not f and i < 10; i++) {\n      auto it = lower_bound(all(pos[i]), l);\n      if(it < pos[i].end() and *it <= l + k) {\n        i = *it;\n        f = true;\n        i--;\n      }\n    }\n    if(not f) i = n;\n    k -= i - l;\n    for(; l < i; l++)\n      s[l] = '.';\n    l++;\n    first = 0;\n    cnt++;\n  }\n  for(i = 0; i < k; i++)\n    s[n - i - 1] = '.';\n  \n  for(auto i : s) {\n    if(isalnum(i))\n      cout << i;\n  }\n}\n\nint main() {\n  cin.tie(NULL)->sync_with_stdio(false);\n  int t;\n  cin >> t;\n  while(t--) {\n    magic();\n    cout << \"\\n\";\n  }\n  return 0;\n}\n",
+		"date": "2022-12-11T14:47:24.028Z",
+		"difficulty": 1500,
+		"folder": "Educational",
+		"link": "https://codeforces.com/contest/1765/problem/N",
+		"name": "Number Reduction",
+		"notes": "Technique used before,\nbut I forgot.\n----------------\nNice case handling",
+		"tags": [
+			"greedy"
+		]
+	},
+	{
+		"_id": "ce8974d1-34dc-4364-871e-b4c362113dfb",
+		"code": "const int lim = 1e7;\nvector<int> prime{2}, lpf(lim + 2);\n\nvoid sieve() {\n  iota(all(lpf), 0);\n  for(int i = 4; i <= lim; i += 2) lpf[i] = 2;\n  for(LL i = 3; i <= lim; i += 2) {\n    if(lpf[i] < i) continue;\n    prime.push_back(i);\n    for(LL j = i * i; j <= lim; j += (i << 1))\n      lpf[j] = min(lpf[j], (int)i);\n  }\n}\n\nvector<int> factorize(int n) {\n  vector<int> ret;\n  while(n > 1) {\n    int p = lpf[n];\n    ret.push_back(p);\n    while(n % p == 0) n /= p;\n  }\n  return ret;\n}\n\nint magic() {\n  int x, y;\n  cin >> x >> y;\n\n  int ans = 1e9;\n  auto factor = factorize(y - x);\n  for(auto i : factor) {\n    ans = min(ans, (i - x % i) % i);\n  }\n\n  return (ans == int(1e9) ? -1 : ans);\n}",
+		"date": "2022-12-13T15:45:49.130Z",
+		"difficulty": 0,
+		"folder": "Educational",
+		"link": "https://codeforces.com/contest/1766/problem/D",
+		"name": "Lucky Chains",
+		"notes": "Learned new technique:\n1. Using LPF technique, factorization is reduced to O(logn)\nfrom O(sqrt(n)).\n2. gcd(x, y) = gcd(y - x, x): Euclidean method.",
+		"tags": [
+			"brute force",
+			"dp",
+			"greedy",
+			"math",
+			"number theory"
+		]
+	},
+	{
+		"_id": "222c29cc-cf91-4a37-b54c-e13624eb7e0a",
+		"code": "long long n, x, y, dp[5002][5002][2];\nvector<int> c;\n\nlong long fun(int i, int cnt, int prev) {\n  if(cnt * 2 > n) return 1e18;\n  if(i < 0)\n    return (cnt or prev ? 1e18 : 0);\n  long long &ret = dp[i][cnt][prev];\n  if(ret > -1) return ret;\n  ret = 1e18;\n  if(c[i] == 1) {\n    ret = min(ret, fun(i - 1, cnt + 1, 1));\n    if(prev) {\n      ret = min(ret, x + fun(i - 1, cnt - 1, 0));\n    }\n    if(cnt > 1 or (cnt and not prev))\n      ret = min(ret, y + fun(i - 1, cnt - 1, 0));\n  } else {\n    ret = min(ret, fun(i - 1, cnt, 0));\n    if(prev)\n      ret = min(ret, x + fun(i - 1, cnt, 1));\n    if(cnt > 1 or (cnt and not prev))\n      ret = min(ret, y + fun(i - 1, cnt, 1));\n  }\n  return ret;\n}\n\nvoid magic() {\n  string a, b;\n  cin >> n >> x >> y >> a >> b;\n  for(int i = 0; i < n; i++) {\n    for(int j = 0; j < n; j++)\n      dp[i][j][0] = dp[i][j][1] = -1;\n  }\n\n  x = min(x, y + y);\n  c.resize(n);\n  for(int i = 0; i < n; i++)\n    c[i] = a[i] ^ b[i];\n  int cnt = count(c.begin(), c.end(), 1);\n  if(cnt % 2) {\n    cout << -1;\n    return;\n  }\n\n  long long ans = fun(n - 1, 0, 0);\n  cout << (ans < (long long)(1e18) ? ans : -1);\n}",
+		"date": "2022-12-18T14:20:18.309Z",
+		"difficulty": 2000,
+		"folder": "Educational",
+		"link": "https://codeforces.com/problemset/problem/1733/D2",
+		"name": "Zero-One (Hard Version)",
+		"notes": "Nice DP problem",
+		"tags": [
+			"dp",
+			"greedy"
+		]
+	},
+	{
+		"_id": "68569fb2-a03c-4c3d-97c5-c2bb5fd98678",
+		"code": "int main() {\n  long long d1, d2;\n  for(int i = 2; i < 27; i++) {\n    cout << \"? 1 \" << i << endl;\n    cin >> d1;\n    if(d1 == -1) {\n      cout << \"! \" << i - 1 << endl;\n      break;\n    }\n    cout << \"? \" << i << \" 1\" << endl;\n    cin >> d2;\n    if(d1 == d2) continue;\n    else {\n      cout << \"! \" << d1 + d2 << endl;\n      break;\n    }\n  }\n\n  return 0;\n}\n",
+		"date": "2023-01-02T04:47:17.760Z",
+		"difficulty": 1800,
+		"folder": "Educational",
+		"link": "https://codeforces.com/contest/1729/problem/E",
+		"name": "Guess the Cycle Size",
+		"notes": "Probabilistic",
+		"tags": [
+			"interactive",
+			"probabilities"
+		]
+	},
+	{
+		"_id": "8bcbadd8-d805-4665-98ac-86e9e112b7aa",
+		"code": "vector<int> process(const string &s) {\n  int n = s.size();\n  vector<int> ret(n);\n  ret[0] = (s[0] - '0') % 9;\n  for(int i = 1; i < n; i++)\n    ret[i] = (ret[i - 1] + s[i] - '0') % 9;\n  return ret;\n}\n\nvoid magic() {\n  int n, w, m; string s;\n  cin >> s >> w >> m; n = s.size();\n  \n  auto h = process(s);\n  vector<int> v(n - w + 1);\n  vector<set<int>> pos(9);\n  v[0] = h[w - 1];\n  pos[v[0]].insert(0);\n  for(int i = 1; i <= n - w; i++) {\n    v[i] = (h[i + w - 1] - h[i - 1] + 9) % 9;\n    pos[v[i]].insert(i);\n  }\n\n  h.insert(h.begin(), 0);\n  int l, r, k;\n  bool f;\n  while(m--) {\n    f = false;\n    cin >> l >> r >> k;\n    int value = (h[r] - h[l - 1] + 9) % 9;\n    int l1 = 1e9, l2 = 1e9;\n    for(int i = 0; i < 9; i++) {\n      if(pos[i].empty() or *pos[i].begin() >= l1) continue;\n      int val = (value * i) % 9;\n      int tmp = *pos[i].begin(), rest = (k - val + 9) % 9;\n      pos[i].erase(tmp);\n      if(pos[rest].size()) {\n        l1 = tmp + 1; l2 = *pos[rest].begin() + 1;\n      }\n      pos[i].insert(tmp);\n    }\n\n    if(l1 == int(1e9)) l1 = l2 = -1;\n    cout << l1 << \" \" << l2 << \"\\n\";\n  }\n}\n\nint main() {\n  cin.tie(NULL)->sync_with_stdio(false);\n  int t;\n  cin >> t;\n  while(t--) {\n    magic();\n  }\n\n  return 0;\n}",
+		"date": "2023-01-02T11:06:21.991Z",
+		"difficulty": 1900,
+		"folder": "Educational",
+		"link": "https://codeforces.com/contest/1729/problem/F",
+		"name": "Kirei and the Linear Function",
+		"notes": "Nice observation:\nthe mod of a number by 9 = (sum of digits) % 9",
+		"tags": [
+			"hashing",
+			"math"
+		]
 	}
 ]
