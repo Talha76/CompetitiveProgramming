@@ -82,94 +82,6 @@
 		]
 	},
 	{
-		"_id": "b8ffc4a9-588f-4878-8faf-551157b735d4",
-		"code": "void magic() {\n  int n;\n  cin >> n;\n  vector<int> a(n), pos(n);\n  for(int i = 0; i < n; i++) {\n    cin >> a[i];\n    pos[a[i]] = i;\n  }\n\n  int r = -1, l = n, len = 0;\n  LL ans = 0;\n  function<LL(int)> f = [&](int len) {\n    int _l = max(0, r - len + 1), _r = min(n - 1, l + len - 1);\n    dbg(_l, _r, len);\n    return max(0, _r - _l + 2 - len);\n  };\n  for(int i = 1; i <= n; i++) {\n    l = min(l, pos[i - 1]); r = max(r, pos[i - 1]);\n    dbg(i);\n    ans += f(++len);\n    ans += f(++len);\n  }\n\n  cout << ans;\n}",
-		"date": "2022-10-18T08:45:19.888Z",
-		"difficulty": 2000,
-		"folder": "Educational",
-		"link": "https://codeforces.com/problemset/problem/1744/F",
-		"name": "MEX vs MED",
-		"notes": "Observation: The property of mex and med",
-		"tags": [
-			"brute force",
-			"math",
-			"two pointers"
-		]
-	},
-	{
-		"_id": "2ba4b066-2a60-40d1-b98a-1c75e7349020",
-		"code": "const int mod = 998244353;\n\nLL bigmod(LL a, LL p) {\n  LL ret = 1;\n  for(; p; p >>= 1, a = (a * a) % mod) {\n    if(p & 1)\n      ret = (ret * a) % mod;\n  }\n  return ret;\n}\n\nvoid magic() {\n  LL n, m;\n  cin >> n >> m;\n\n  LL ans = 0, tmp = 1, prime_product = 1, tmp2, total = 1;\n  vector<bool> prime(n + 1, 1);\n  prime[1] = false;\n  for(LL len = 1; len <= n; len++) {\n    if(prime[len]) {\n      prime_product *= len;\n      for(LL i = len * len; i <= n; i += len)\n        prime[i] = false;\n    }\n    total = (total * (m % mod)) % mod;\n    tmp = (tmp * ((m / prime_product) % mod)) % mod;\n    ans += (total - tmp + mod) % mod;\n    ans %= mod;\n  }\n\n  cout << ans;\n}",
-		"date": "2022-10-21T16:04:07.155Z",
-		"difficulty": 0,
-		"folder": "Educational",
-		"link": "https://codeforces.com/contest/1749/problem/D",
-		"name": "Counting Arrays",
-		"notes": "Observation:\nambiguous = total - nonambiguous",
-		"tags": [
-			"combinatorics",
-			"math",
-			"number theory"
-		]
-	},
-	{
-		"_id": "23478b55-71c9-425d-a6cb-f2d8bb6dee98",
-		"code": "void magic() {\n  int n, x;\n  cin >> n >> x;\n  vector<int> cnt(x + 1);\n  for(int i = 0; i < n; i++) {\n    int t;\n    cin >> t;\n    cnt[t]++;\n  }\n\n  for(int i = 1; i < x; i++) {\n    if(cnt[i] % (i + 1)) {\n      cout << \"No\";\n      return;\n    }\n    cnt[i + 1] += cnt[i] / (i + 1);\n  }\n\n  cout << \"Yes\";\n}",
-		"date": "2022-10-24T10:03:42.060Z",
-		"difficulty": 1600,
-		"folder": "Educational",
-		"link": "https://codeforces.com/contest/1754/problem/D",
-		"name": "Factorial Divisibility",
-		"notes": "",
-		"tags": [
-			"math"
-		]
-	},
-	{
-		"_id": "869b3b9a-2664-472c-acb5-415d29c626ed",
-		"code": "#define x first\n#define y second\n\n#define check(i) ((mask >> i) & 1)\n#define set(i) (mask | (1 << i))\n#define unset(i) (mask & ~(1 << i))\n\ndouble operator - (pll a, pll b) {\n  double dx = a.x - b.x, dy = a.y - b.y;\n  return sqrt(dx*dx + dy*dy);\n}\n\n\nLL n, m;\npll points[20];\ndouble dp[20][6][(1<<18) + 5];\n\ndouble f(int i, int v, int mask) {\n  if(mask == (1 << (n + m + 1)) - 1)\n    return (points[0] - points[i]) / (1<<v);\n  double &ret = dp[i][v][mask];\n  if(ret != -1)\n    return ret;\n  ret = 1e19;\n  for(int j = 1; j <= n + m; j++) {\n    if(not check(j)) {\n      if(j > n) {\n        ret = min(ret, (points[i] - points[j])/(1<<v) + f(j, v + 1, set(j)));\n        ret = min(ret, f(i, v, set(j)));\n      }\n      else\n        ret = min(ret, (points[i] - points[j])/(1<<v) + f(j, v, set(j)));\n    }\n  }\n  return ret;\n}\n\nsigned main() {\n  cin.tie(NULL)->sync_with_stdio(false);\n\n  for(int i = 0; i < 20; i++) {\n    for(int j = 0; j < 6; j++) {\n      for(int k = 0; k < (1<<18) + 3; k++)\n        dp[i][j][k] = -1;\n    }\n  }\n\n  cin >> n >> m;\n  for(int i = 1; i <= n + m; i++)\n    cin >> points[i].x >> points[i].y;\n  points[0] = {0, 0};\n\n  cout << fixed << setprecision(10) << f(0, 0, 1);\n\n  return 0;\n}",
-		"date": "2022-10-25T14:44:04.333Z",
-		"difficulty": 0,
-		"folder": "Educational",
-		"link": "https://atcoder.jp/contests/abc274/tasks/abc274_e",
-		"name": "Booster",
-		"notes": "1. Don't do stupid mistakes.\n2. Always make sure to check the initialization",
-		"tags": []
-	},
-	{
-		"_id": "100f48d6-dfb7-47a7-ad76-74adceb66b5c",
-		"code": "void magic() {\n  int n, k = 0;\n  cin >> n;\n  vector<int> b(n + 1), in(n + 1);\n  vector<vector<int>> adj(n + 1);\n  for(int i = 1; i <= n; i++) {\n    cin >> b[i];\n    if(b[i] > i) k++;\n  }\n\n  for(int i = 1; i <= n; i++) {\n    if((i <= k and b[i] < n + 1) or\n       (i > k  and b[i])){\n      adj[b[i]].push_back(i);\n      in[i]++;\n    }\n  }\n\n  cout << k << \"\\n\";\n  vector<int> samelvl;\n  for(int i = 1; i <= n; i++)\n    if(not in[i]) samelvl.push_back(i);\n\n  while(samelvl.size()) {\n    for(int i = 0; i < samelvl.size(); i++) {\n      if(adj[samelvl[i]].size()) {\n        swap(samelvl[0], samelvl[i]);\n        break;\n      }\n    }\n    int idx = samelvl[0];\n    while(samelvl.size()) {\n      cout << samelvl.back() << \" \";\n      samelvl.pop_back();\n    }\n    for(auto i : adj[idx])\n      samelvl.push_back(i);\n  }\n}",
-		"date": "2022-10-28T09:38:55.001Z",
-		"difficulty": 1900,
-		"folder": "Educational",
-		"link": "https://codeforces.com/problemset/problem/1738/D",
-		"name": "Permutation Addicts",
-		"notes": "Good Problem.",
-		"tags": [
-			"constructive algorithms",
-			"data structures",
-			"dfs and similar",
-			"dsu",
-			"graphs",
-			"trees"
-		]
-	},
-	{
-		"_id": "2c83b178-48be-485a-ae7f-88cf164bf495",
-		"code": "void magic() {\n  int n, q, l, r, ans;\n  cin >> n >> q;\n  vector<LL> a(n + 1), pre_sum(n + 1), pre_xor(n + 1);\n  map<int, vector<int>> pos[2];\n  for(int i = 1; i <= n; i++) {\n    cin >> a[i];\n    pre_xor[i] = pre_xor[i - 1] ^ a[i];\n    pre_sum[i] = pre_sum[i - 1] + a[i];\n    pos[i & 1][pre_xor[i]].push_back(i);\n  }\n\n  while(q--) {\n    cin >> l >> r;\n    l--;\n    if(pre_xor[r] ^ pre_xor[l]) ans = -1;\n    else if(pre_sum[r] - pre_sum[l] == 0) ans = 0;\n    else if((r - l) & 1) ans = 1;\n    else {\n      auto it = upper_bound(all(pos[!(l&1)][pre_xor[l]]), l);\n      if(it == pos[!(l&1)][pre_xor[l]].end() or *it > r) ans = -1;\n      else ans = 1 + (a[l + 1] and a[r]);\n    }\n\n    cout << ans << \"\\n\";\n  }\n}",
-		"date": "2022-11-06T12:51:00.153Z",
-		"difficulty": 1900,
-		"folder": "Educational",
-		"link": "https://codeforces.com/contest/1747/problem/D",
-		"name": "Yet Another Problem",
-		"notes": "Learned the same xor finding part \nusing map and binary search on the \nvector of index of same pair",
-		"tags": [
-			"binary search",
-			"bitmasks",
-			"constructive algorithms",
-			"data structures"
-		]
-	},
-	{
 		"_id": "151b595e-925b-4c9d-a83f-c60c5b119189",
 		"code": "#include \"bits/stdc++.h\"\n#define all(v) v.begin(), v.end()\nusing namespace std;\ntypedef long long LL;\n\nconst double eps = 1e-9;\n\n#define x(a) get<0>(a)\n#define y(a) get<1>(a)\n#define r(a) get<2>(a)\n\npair<double, double> get_min_max(tuple<LL, LL, LL> &a, tuple<LL, LL, LL> &b) {\n  double maxx = 0., minn = 1e18;\n  if(x(a) == x(b) and y(a) == y(b)) {\n    maxx = minn = abs(r(a) - r(b));\n    return {maxx, minn};\n  }\n\n  LL dx = x(a) - x(b), dy = y(a) - y(b);\n  double d = hypot(dx, dy);\n\n  maxx = d + r(a) + r(b);\n  if((r(a) - r(b))*(r(a) - r(b)) >= dx*dx + dy*dy) {\n    minn = max(r(a), r(b)) - min(r(a), r(b)) - d;\n  } else {\n    minn = d - r(a) - r(b);\n  }\n\n  minn = max(0., minn);\n  return {maxx, minn};\n}\n\nbool cmp(double a, double b) {\n  return b - a > eps;\n}\n\nint main() {\n  cin.tie(NULL)->sync_with_stdio(false);\n\n  int n, q;\n  cin >> n >> q;\n  vector<tuple<LL, LL, LL>> a(n);\n  for(auto &[x, y, r] : a)\n    cin >> x >> y >> r;\n\n  vector<double> minn, maxx;\n  for(int i = 0; i < n; i++) {\n    for(int j = i + 1; j < n; j++) {\n      auto res = get_min_max(a[i], a[j]);\n      maxx.push_back(res.first);\n      minn.push_back(res.second);\n    }\n  }\n  sort(all(maxx), cmp); sort(all(minn), cmp);\n\n  vector<vector<int>> pos(1e6 + 5);\n  vector<int> query(q), ans(q);\n  for(int i = 0; i < q; i++) {\n    cin >> query[i];\n    pos[query[i]].push_back(i);\n  }\n  sort(all(query));\n\n  int i = 0, j = 0;\n  for(auto k : query) {\n    while(i < minn.size() and !(k - minn[i] < -eps)) i++;\n    while(j < maxx.size() and k - maxx[j] > eps) j++;\n    for(auto idx : pos[k])\n      ans[idx] = i - j;\n  }\n\n  for(auto i : ans)\n    cout << i << \"\\n\";\n\n  return 0;\n}",
 		"date": "2022-11-07T16:09:23.021Z",
@@ -195,11 +107,114 @@
 		]
 	},
 	{
+		"_id": "9e13469b-1a31-4353-878e-e4575c54e2ab",
+		"code": "// problem-url: https://codeforces.com/problemset/problem/1722/G\n#include \"bits/stdc++.h\"\nusing namespace std;\n#define all(x) x.begin(), x.end()\n\nvoid magic() {\n  int n;\n  cin >> n;\n  vector <int> a(n);\n  iota(all(a), 0);\n  if (accumulate(a.begin(), a.begin() + n - 3, 0, [](int x, int y) { return x ^ y; }) == 0) iota(all(a), 1);\n  a[n - 3] = (1 << 27); a[n - 2] = (1 << 28);\n  a[n - 1] = accumulate(a.begin(), a.begin() + n - 1, 0, [](int x, int y) { return x ^ y; });\n  for (auto i : a) cout << i << \" \";\n}\nint main() {\n  int t;\n  cin >> t;\n  while (t--) {\n    magic();\n    cout << \"\\n\";\n  }\n}",
+		"date": "2023-01-15T15:57:57.336Z",
+		"difficulty": 1500,
+		"folder": "codeforces",
+		"link": "https://codeforces.com/problemset/problem/1722/G",
+		"name": "Even-Odd XOR",
+		"notes": "Learnt a pattern",
+		"tags": [
+			"bitmasks",
+			"constructive algorithms",
+			"greedy"
+		]
+	},
+	{
+		"_id": "b8ffc4a9-588f-4878-8faf-551157b735d4",
+		"code": "void magic() {\n  int n;\n  cin >> n;\n  vector<int> a(n), pos(n);\n  for(int i = 0; i < n; i++) {\n    cin >> a[i];\n    pos[a[i]] = i;\n  }\n\n  int r = -1, l = n, len = 0;\n  LL ans = 0;\n  function<LL(int)> f = [&](int len) {\n    int _l = max(0, r - len + 1), _r = min(n - 1, l + len - 1);\n    dbg(_l, _r, len);\n    return max(0, _r - _l + 2 - len);\n  };\n  for(int i = 1; i <= n; i++) {\n    l = min(l, pos[i - 1]); r = max(r, pos[i - 1]);\n    dbg(i);\n    ans += f(++len);\n    ans += f(++len);\n  }\n\n  cout << ans;\n}",
+		"date": "2023-01-16T06:42:37.309Z",
+		"difficulty": 2000,
+		"folder": "",
+		"link": "https://codeforces.com/problemset/problem/1744/F",
+		"name": "MEX vs MED",
+		"notes": "Observation: The property of mex and med",
+		"tags": [
+			"brute force",
+			"math",
+			"two pointers"
+		]
+	},
+	{
+		"_id": "2ba4b066-2a60-40d1-b98a-1c75e7349020",
+		"code": "const int mod = 998244353;\n\nLL bigmod(LL a, LL p) {\n  LL ret = 1;\n  for(; p; p >>= 1, a = (a * a) % mod) {\n    if(p & 1)\n      ret = (ret * a) % mod;\n  }\n  return ret;\n}\n\nvoid magic() {\n  LL n, m;\n  cin >> n >> m;\n\n  LL ans = 0, tmp = 1, prime_product = 1, tmp2, total = 1;\n  vector<bool> prime(n + 1, 1);\n  prime[1] = false;\n  for(LL len = 1; len <= n; len++) {\n    if(prime[len]) {\n      prime_product *= len;\n      for(LL i = len * len; i <= n; i += len)\n        prime[i] = false;\n    }\n    total = (total * (m % mod)) % mod;\n    tmp = (tmp * ((m / prime_product) % mod)) % mod;\n    ans += (total - tmp + mod) % mod;\n    ans %= mod;\n  }\n\n  cout << ans;\n}",
+		"date": "2023-01-16T06:43:06.457Z",
+		"difficulty": 0,
+		"folder": "codeforces",
+		"link": "https://codeforces.com/contest/1749/problem/D",
+		"name": "Counting Arrays",
+		"notes": "Observation:\nambiguous = total - nonambiguous",
+		"tags": [
+			"combinatorics",
+			"math",
+			"number theory"
+		]
+	},
+	{
+		"_id": "23478b55-71c9-425d-a6cb-f2d8bb6dee98",
+		"code": "void magic() {\n  int n, x;\n  cin >> n >> x;\n  vector<int> cnt(x + 1);\n  for(int i = 0; i < n; i++) {\n    int t;\n    cin >> t;\n    cnt[t]++;\n  }\n\n  for(int i = 1; i < x; i++) {\n    if(cnt[i] % (i + 1)) {\n      cout << \"No\";\n      return;\n    }\n    cnt[i + 1] += cnt[i] / (i + 1);\n  }\n\n  cout << \"Yes\";\n}",
+		"date": "2023-01-16T06:43:21.278Z",
+		"difficulty": 1600,
+		"folder": "codeforces",
+		"link": "https://codeforces.com/contest/1754/problem/D",
+		"name": "Factorial Divisibility",
+		"notes": "",
+		"tags": [
+			"math"
+		]
+	},
+	{
+		"_id": "869b3b9a-2664-472c-acb5-415d29c626ed",
+		"code": "#define x first\n#define y second\n\n#define check(i) ((mask >> i) & 1)\n#define set(i) (mask | (1 << i))\n#define unset(i) (mask & ~(1 << i))\n\ndouble operator - (pll a, pll b) {\n  double dx = a.x - b.x, dy = a.y - b.y;\n  return sqrt(dx*dx + dy*dy);\n}\n\n\nLL n, m;\npll points[20];\ndouble dp[20][6][(1<<18) + 5];\n\ndouble f(int i, int v, int mask) {\n  if(mask == (1 << (n + m + 1)) - 1)\n    return (points[0] - points[i]) / (1<<v);\n  double &ret = dp[i][v][mask];\n  if(ret != -1)\n    return ret;\n  ret = 1e19;\n  for(int j = 1; j <= n + m; j++) {\n    if(not check(j)) {\n      if(j > n) {\n        ret = min(ret, (points[i] - points[j])/(1<<v) + f(j, v + 1, set(j)));\n        ret = min(ret, f(i, v, set(j)));\n      }\n      else\n        ret = min(ret, (points[i] - points[j])/(1<<v) + f(j, v, set(j)));\n    }\n  }\n  return ret;\n}\n\nsigned main() {\n  cin.tie(NULL)->sync_with_stdio(false);\n\n  for(int i = 0; i < 20; i++) {\n    for(int j = 0; j < 6; j++) {\n      for(int k = 0; k < (1<<18) + 3; k++)\n        dp[i][j][k] = -1;\n    }\n  }\n\n  cin >> n >> m;\n  for(int i = 1; i <= n + m; i++)\n    cin >> points[i].x >> points[i].y;\n  points[0] = {0, 0};\n\n  cout << fixed << setprecision(10) << f(0, 0, 1);\n\n  return 0;\n}",
+		"date": "2023-01-16T06:43:47.354Z",
+		"difficulty": 0,
+		"folder": "atcoder",
+		"link": "https://atcoder.jp/contests/abc274/tasks/abc274_e",
+		"name": "Booster",
+		"notes": "1. Don't do stupid mistakes.\n2. Always make sure to check the initialization",
+		"tags": []
+	},
+	{
+		"_id": "100f48d6-dfb7-47a7-ad76-74adceb66b5c",
+		"code": "void magic() {\n  int n, k = 0;\n  cin >> n;\n  vector<int> b(n + 1), in(n + 1);\n  vector<vector<int>> adj(n + 1);\n  for(int i = 1; i <= n; i++) {\n    cin >> b[i];\n    if(b[i] > i) k++;\n  }\n\n  for(int i = 1; i <= n; i++) {\n    if((i <= k and b[i] < n + 1) or\n       (i > k  and b[i])){\n      adj[b[i]].push_back(i);\n      in[i]++;\n    }\n  }\n\n  cout << k << \"\\n\";\n  vector<int> samelvl;\n  for(int i = 1; i <= n; i++)\n    if(not in[i]) samelvl.push_back(i);\n\n  while(samelvl.size()) {\n    for(int i = 0; i < samelvl.size(); i++) {\n      if(adj[samelvl[i]].size()) {\n        swap(samelvl[0], samelvl[i]);\n        break;\n      }\n    }\n    int idx = samelvl[0];\n    while(samelvl.size()) {\n      cout << samelvl.back() << \" \";\n      samelvl.pop_back();\n    }\n    for(auto i : adj[idx])\n      samelvl.push_back(i);\n  }\n}",
+		"date": "2023-01-16T06:44:13.620Z",
+		"difficulty": 1900,
+		"folder": "codeforces",
+		"link": "https://codeforces.com/problemset/problem/1738/D",
+		"name": "Permutation Addicts",
+		"notes": "Good Problem.",
+		"tags": [
+			"constructive algorithms",
+			"data structures",
+			"dfs and similar",
+			"dsu",
+			"graphs",
+			"trees"
+		]
+	},
+	{
+		"_id": "2c83b178-48be-485a-ae7f-88cf164bf495",
+		"code": "void magic() {\n  int n, q, l, r, ans;\n  cin >> n >> q;\n  vector<LL> a(n + 1), pre_sum(n + 1), pre_xor(n + 1);\n  map<int, vector<int>> pos[2];\n  for(int i = 1; i <= n; i++) {\n    cin >> a[i];\n    pre_xor[i] = pre_xor[i - 1] ^ a[i];\n    pre_sum[i] = pre_sum[i - 1] + a[i];\n    pos[i & 1][pre_xor[i]].push_back(i);\n  }\n\n  while(q--) {\n    cin >> l >> r;\n    l--;\n    if(pre_xor[r] ^ pre_xor[l]) ans = -1;\n    else if(pre_sum[r] - pre_sum[l] == 0) ans = 0;\n    else if((r - l) & 1) ans = 1;\n    else {\n      auto it = upper_bound(all(pos[!(l&1)][pre_xor[l]]), l);\n      if(it == pos[!(l&1)][pre_xor[l]].end() or *it > r) ans = -1;\n      else ans = 1 + (a[l + 1] and a[r]);\n    }\n\n    cout << ans << \"\\n\";\n  }\n}",
+		"date": "2023-01-16T06:44:26.742Z",
+		"difficulty": 1900,
+		"folder": "codeforces",
+		"link": "https://codeforces.com/contest/1747/problem/D",
+		"name": "Yet Another Problem",
+		"notes": "Learned the same xor finding part \nusing map and binary search on the \nvector of index of same pair",
+		"tags": [
+			"binary search",
+			"bitmasks",
+			"constructive algorithms",
+			"data structures"
+		]
+	},
+	{
 		"_id": "f8956bf9-fa38-482b-9b6a-38f78a3dfa49",
 		"code": "int main() {\n  int n;\n  cin >> n;\n  vector<LL> a(n), b(n);\n  for(auto &i : a)\n    cin >> i;\n  for(auto &i : b)\n    cin >> i;\n\n  LL cnt = 0;\n  for(int i = 0; i < n; i++)\n    cnt += a[i] * b[i];\n\n  LL ans, tmp1, tmp2;\n  ans = cnt;\n  for(int i = 0; i < n; i++) {\n    tmp1 = tmp2 = cnt;\n    for(int l = i, r = i + 1; ~l and r < n; l--, r++) {\n      tmp1 -= a[l] * b[l] + a[r] * b[r];\n      tmp1 += a[l] * b[r] + a[r] * b[l];\n      ans = max(ans, tmp1);\n    }\n    for(int l = i - 1, r = i + 1; ~l and r < n; l--, r++) {\n      tmp2 -= a[l] * b[l] + a[r] * b[r];\n      tmp2 += a[l] * b[r] + a[r] * b[l];\n      ans = max(ans, tmp2);\n    }\n  }\n\n  cout << ans;\n\n  return 0;\n}",
-		"date": "2022-12-06T06:13:03.139Z",
+		"date": "2023-01-16T06:44:38.738Z",
 		"difficulty": 1600,
-		"folder": "Educational",
+		"folder": "codeforces",
 		"link": "https://codeforces.com/problemset/problem/1519/D",
 		"name": "Maximum Sum of Products",
 		"notes": "New Technique",
@@ -213,10 +228,10 @@
 	},
 	{
 		"_id": "5c4cacdc-d477-4d0f-84b6-beb13117a16a",
-		"code": "#include \"bits/stdc++.h\"\n#define all(v) v.begin(), v.end()\n#ifdef MUSHFIQ_DEBUG\n#include \"dbg.h\"\n#else\n#define dbg(...) {}\n#endif\nusing namespace std;\n\nvoid magic() {\n  string s; int k;\n  cin >> s >> k;\n\n  int n = s.size();\n  vector<vector<int>> pos(10);\n  for(int i = 0; i < n; i++)\n    pos[s[i] - '0'].push_back(i);\n\n  int first = 1, l = 0, i, cnt = 0, remain = n - k;\n  while(k and l < n and cnt < remain) {\n    bool f = false;\n    for(i = first; not f and i < 10; i++) {\n      auto it = lower_bound(all(pos[i]), l);\n      if(it < pos[i].end() and *it <= l + k) {\n        i = *it;\n        f = true;\n        i--;\n      }\n    }\n    if(not f) i = n;\n    k -= i - l;\n    for(; l < i; l++)\n      s[l] = '.';\n    l++;\n    first = 0;\n    cnt++;\n  }\n  for(i = 0; i < k; i++)\n    s[n - i - 1] = '.';\n  \n  for(auto i : s) {\n    if(isalnum(i))\n      cout << i;\n  }\n}\n\nint main() {\n  cin.tie(NULL)->sync_with_stdio(false);\n  int t;\n  cin >> t;\n  while(t--) {\n    magic();\n    cout << \"\\n\";\n  }\n  return 0;\n}\n",
-		"date": "2022-12-11T14:47:24.028Z",
+		"code": "void magic() {\n  string s; int k;\n  cin >> s >> k;\n\n  int n = s.size();\n  vector<vector<int>> pos(10);\n  for(int i = 0; i < n; i++)\n    pos[s[i] - '0'].push_back(i);\n\n  int first = 1, l = 0, i, cnt = 0, remain = n - k;\n  while(k and l < n and cnt < remain) {\n    bool f = false;\n    for(i = first; not f and i < 10; i++) {\n      auto it = lower_bound(all(pos[i]), l);\n      if(it < pos[i].end() and *it <= l + k) {\n        i = *it;\n        f = true;\n        i--;\n      }\n    }\n    if(not f) i = n;\n    k -= i - l;\n    for(; l < i; l++)\n      s[l] = '.';\n    l++;\n    first = 0;\n    cnt++;\n  }\n  for(i = 0; i < k; i++)\n    s[n - i - 1] = '.';\n  \n  for(auto i : s) {\n    if(isalnum(i))\n      cout << i;\n  }\n}\n\nint main() {\n  cin.tie(NULL)->sync_with_stdio(false);\n  int t;\n  cin >> t;\n  while(t--) {\n    magic();\n    cout << \"\\n\";\n  }\n  return 0;\n}",
+		"date": "2023-01-16T06:45:11.576Z",
 		"difficulty": 1500,
-		"folder": "Educational",
+		"folder": "codeforces",
 		"link": "https://codeforces.com/contest/1765/problem/N",
 		"name": "Number Reduction",
 		"notes": "Technique used before,\nbut I forgot.\n----------------\nNice case handling",
@@ -227,9 +242,9 @@
 	{
 		"_id": "ce8974d1-34dc-4364-871e-b4c362113dfb",
 		"code": "const int lim = 1e7;\nvector<int> prime{2}, lpf(lim + 2);\n\nvoid sieve() {\n  iota(all(lpf), 0);\n  for(int i = 4; i <= lim; i += 2) lpf[i] = 2;\n  for(LL i = 3; i <= lim; i += 2) {\n    if(lpf[i] < i) continue;\n    prime.push_back(i);\n    for(LL j = i * i; j <= lim; j += (i << 1))\n      lpf[j] = min(lpf[j], (int)i);\n  }\n}\n\nvector<int> factorize(int n) {\n  vector<int> ret;\n  while(n > 1) {\n    int p = lpf[n];\n    ret.push_back(p);\n    while(n % p == 0) n /= p;\n  }\n  return ret;\n}\n\nint magic() {\n  int x, y;\n  cin >> x >> y;\n\n  int ans = 1e9;\n  auto factor = factorize(y - x);\n  for(auto i : factor) {\n    ans = min(ans, (i - x % i) % i);\n  }\n\n  return (ans == int(1e9) ? -1 : ans);\n}",
-		"date": "2022-12-13T15:45:49.130Z",
+		"date": "2023-01-16T06:45:25.202Z",
 		"difficulty": 0,
-		"folder": "Educational",
+		"folder": "codeforces",
 		"link": "https://codeforces.com/contest/1766/problem/D",
 		"name": "Lucky Chains",
 		"notes": "Learned new technique:\n1. Using LPF technique, factorization is reduced to O(logn)\nfrom O(sqrt(n)).\n2. gcd(x, y) = gcd(y - x, x): Euclidean method.",
@@ -244,9 +259,9 @@
 	{
 		"_id": "222c29cc-cf91-4a37-b54c-e13624eb7e0a",
 		"code": "long long n, x, y, dp[5002][5002][2];\nvector<int> c;\n\nlong long fun(int i, int cnt, int prev) {\n  if(cnt * 2 > n) return 1e18;\n  if(i < 0)\n    return (cnt or prev ? 1e18 : 0);\n  long long &ret = dp[i][cnt][prev];\n  if(ret > -1) return ret;\n  ret = 1e18;\n  if(c[i] == 1) {\n    ret = min(ret, fun(i - 1, cnt + 1, 1));\n    if(prev) {\n      ret = min(ret, x + fun(i - 1, cnt - 1, 0));\n    }\n    if(cnt > 1 or (cnt and not prev))\n      ret = min(ret, y + fun(i - 1, cnt - 1, 0));\n  } else {\n    ret = min(ret, fun(i - 1, cnt, 0));\n    if(prev)\n      ret = min(ret, x + fun(i - 1, cnt, 1));\n    if(cnt > 1 or (cnt and not prev))\n      ret = min(ret, y + fun(i - 1, cnt, 1));\n  }\n  return ret;\n}\n\nvoid magic() {\n  string a, b;\n  cin >> n >> x >> y >> a >> b;\n  for(int i = 0; i < n; i++) {\n    for(int j = 0; j < n; j++)\n      dp[i][j][0] = dp[i][j][1] = -1;\n  }\n\n  x = min(x, y + y);\n  c.resize(n);\n  for(int i = 0; i < n; i++)\n    c[i] = a[i] ^ b[i];\n  int cnt = count(c.begin(), c.end(), 1);\n  if(cnt % 2) {\n    cout << -1;\n    return;\n  }\n\n  long long ans = fun(n - 1, 0, 0);\n  cout << (ans < (long long)(1e18) ? ans : -1);\n}",
-		"date": "2022-12-18T14:20:18.309Z",
+		"date": "2023-01-16T06:45:39.714Z",
 		"difficulty": 2000,
-		"folder": "Educational",
+		"folder": "codeforces",
 		"link": "https://codeforces.com/problemset/problem/1733/D2",
 		"name": "Zero-One (Hard Version)",
 		"notes": "Nice DP problem",
@@ -258,9 +273,9 @@
 	{
 		"_id": "68569fb2-a03c-4c3d-97c5-c2bb5fd98678",
 		"code": "int main() {\n  long long d1, d2;\n  for(int i = 2; i < 27; i++) {\n    cout << \"? 1 \" << i << endl;\n    cin >> d1;\n    if(d1 == -1) {\n      cout << \"! \" << i - 1 << endl;\n      break;\n    }\n    cout << \"? \" << i << \" 1\" << endl;\n    cin >> d2;\n    if(d1 == d2) continue;\n    else {\n      cout << \"! \" << d1 + d2 << endl;\n      break;\n    }\n  }\n\n  return 0;\n}\n",
-		"date": "2023-01-02T04:47:17.760Z",
+		"date": "2023-01-16T06:45:50.058Z",
 		"difficulty": 1800,
-		"folder": "Educational",
+		"folder": "codeforces",
 		"link": "https://codeforces.com/contest/1729/problem/E",
 		"name": "Guess the Cycle Size",
 		"notes": "Probabilistic",
@@ -272,9 +287,9 @@
 	{
 		"_id": "8bcbadd8-d805-4665-98ac-86e9e112b7aa",
 		"code": "vector<int> process(const string &s) {\n  int n = s.size();\n  vector<int> ret(n);\n  ret[0] = (s[0] - '0') % 9;\n  for(int i = 1; i < n; i++)\n    ret[i] = (ret[i - 1] + s[i] - '0') % 9;\n  return ret;\n}\n\nvoid magic() {\n  int n, w, m; string s;\n  cin >> s >> w >> m; n = s.size();\n  \n  auto h = process(s);\n  vector<int> v(n - w + 1);\n  vector<set<int>> pos(9);\n  v[0] = h[w - 1];\n  pos[v[0]].insert(0);\n  for(int i = 1; i <= n - w; i++) {\n    v[i] = (h[i + w - 1] - h[i - 1] + 9) % 9;\n    pos[v[i]].insert(i);\n  }\n\n  h.insert(h.begin(), 0);\n  int l, r, k;\n  bool f;\n  while(m--) {\n    f = false;\n    cin >> l >> r >> k;\n    int value = (h[r] - h[l - 1] + 9) % 9;\n    int l1 = 1e9, l2 = 1e9;\n    for(int i = 0; i < 9; i++) {\n      if(pos[i].empty() or *pos[i].begin() >= l1) continue;\n      int val = (value * i) % 9;\n      int tmp = *pos[i].begin(), rest = (k - val + 9) % 9;\n      pos[i].erase(tmp);\n      if(pos[rest].size()) {\n        l1 = tmp + 1; l2 = *pos[rest].begin() + 1;\n      }\n      pos[i].insert(tmp);\n    }\n\n    if(l1 == int(1e9)) l1 = l2 = -1;\n    cout << l1 << \" \" << l2 << \"\\n\";\n  }\n}\n\nint main() {\n  cin.tie(NULL)->sync_with_stdio(false);\n  int t;\n  cin >> t;\n  while(t--) {\n    magic();\n  }\n\n  return 0;\n}",
-		"date": "2023-01-02T11:06:21.991Z",
+		"date": "2023-01-16T06:45:58.796Z",
 		"difficulty": 1900,
-		"folder": "Educational",
+		"folder": "codeforces",
 		"link": "https://codeforces.com/contest/1729/problem/F",
 		"name": "Kirei and the Linear Function",
 		"notes": "Nice observation:\nthe mod of a number by 9 = (sum of digits) % 9",
@@ -282,5 +297,27 @@
 			"hashing",
 			"math"
 		]
+	},
+	{
+		"_id": "b4284660-067a-4290-9d80-15209227c5cf",
+		"code": "signed main() {\n  cin.tie(NULL)->sync_with_stdio(false);\n\n  cin >> n;\n  a.resize(n);\n  for (auto &i : a) cin >> i;\n  partial_sum(all(a), a.begin());\n  a.insert(a.begin(), 0);\n\n  LL dp[5005];\n  memset(dp, -1, sizeof dp);\n  dp[0] = dp[1] = 0;\n  for (int i = 1; i <= n + 1; i++) {\n    for (int w = 1; w < i; w++)\n      dp[i] = max(dp[i], dp[i - w] + a[w / 2] + a[(w - 1) / 2]);\n  }\n  cout << dp[n + 1];\n\n  return 0;\n}",
+		"date": "2023-01-16T06:46:10.312Z",
+		"difficulty": 0,
+		"folder": "atcoder",
+		"link": "https://atcoder.jp/contests/abc285/tasks/abc285_e",
+		"name": "Work or Rest",
+		"notes": "Main approach is:\ndp[i] = maximum productivity if i^th day is holiday.\nNow, if i^th day is holiday, then number of consecutive days from previous holiday is w.\nWe are looping this upto n + 1. Since 1 is holiday, n + 1 will also be holiday. So dp[n - 1] is the answer.",
+		"tags": []
+	},
+	{
+		"_id": "6ec7db2e-bbe6-448a-a4dd-21fdcbcd240a",
+		"code": "long long magic(long long n, long long x) {\n  if (n % x == 0) return (2 * n / x - 1) * x;\n  return (n / x)*2*x + magic(x, n % x);\n}\n\nint main() {\n  long long n, x;\n  cin >> n >> x;\n  cout << n + magic(n - x, x);\n  return 0;\n}",
+		"date": "2023-01-16T07:02:06.560Z",
+		"difficulty": 500,
+		"folder": "atcoder",
+		"link": "https://atcoder.jp/contests/agc001/tasks/agc001_b",
+		"name": "Mysterious Light",
+		"notes": "Nice problem using recursion and gcd technique.",
+		"tags": []
 	}
 ]
