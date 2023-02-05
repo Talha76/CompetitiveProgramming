@@ -319,5 +319,23 @@
 		"name": "Mysterious Light",
 		"notes": "Nice problem using recursion and gcd technique.",
 		"tags": []
+	},
+	{
+		"_id": "aca96cdd-020a-4e68-b97d-4db29df09e28",
+		"code": "vector <LL> get_hash(const vector <int> &v) {\n  vector <LL> ret(v.size());\n  ret[1] = v[1];\n  for (int i = 1; i < (int)v.size(); i++)\n    ret[i] = ret[i - 1]*11 + v[i];\n  return ret;\n}\n\nvoid magic() {\n  int n, m;\n  cin >> n >> m;\n  vector <vector <int>> a(n, vector <int> (m + 1));\n  multiset <LL> val;\n  vector <int> pos(m + 1);\n  for (auto &v : a) {\n    for (int i = 1; i <= m; i++) {\n      cin >> v[i];\n      pos[v[i]] = i;\n    }\n    auto hash_val = get_hash(pos);\n    for (auto i : hash_val) val.insert(i);\n  }\n  val.erase(0);\n\n  for (int i = 0; i < n; i++) {\n    auto hash_val = get_hash(a[i]);\n    int ans = 0;\n    for (int j = m; j; j--) if (val.count(hash_val[j])) {\n      ans = j;\n      break;\n    }\n    cout << ans << \" \";\n  }\n}",
+		"date": "2023-01-25T13:29:13.342Z",
+		"difficulty": 0,
+		"folder": "codeforces",
+		"link": "https://codeforces.com/contest/1792/problem/D",
+		"name": "Fixed Prefix Permutations",
+		"notes": "",
+		"tags": [
+			"binary search",
+			"data structures",
+			"hashing",
+			"math",
+			"sortings",
+			"strings"
+		]
 	}
 ]

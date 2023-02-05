@@ -2,13 +2,17 @@ nmap <F5> :NERDTreeToggle<CR>
 " nnoremap <silent> <expr> <F5> g:NERDTree.IsOpen() ? "\:NERDTreeClose<CR>" : bufexists(expand('%')) ? "\:NERDTreeFind<CR>" : "\:NERDTree<CR>"
 
 " Auto import & Compile
-:autocmd BufNewFile *.cpp 0r ~/template.cpp
+" :autocmd BufNewFile *.cpp 0r ~/template.cpp
 
-nnoremap <F9>  :w \| !g++ -std=c++17 -Wall % -o %:r && ./%:r<CR>
-inoremap <F9>  <ESC>:w \| !g++ -std=c++17 -Wall % -o %:r && ./%:r<CR>
-nnoremap <F10> :w \| !g++ -std=c++17 -Wall -DMUSHFIQ_DEBUG % -o %:r && ./%:r<CR>
-inoremap <F10> <ESC>:w \| !g++ -std=c++17 -Wall -DMUSHFIQ_DEBUG % -o %:r && ./%:r<CR>
+autocmd filetype cpp nnoremap <F9>  :w \| !g++ -std=gnu++2a -Wall -g % -o %:r && ./%:r<CR>
+autocmd filetype cpp inoremap <F9>  <ESC>:w \| !g++ -std=gnu++2a -Wall -g % -o %:r && ./%:r<CR>
+autocmd filetype cpp nnoremap <F10> :w \| !g++ -std=c++17 -Wall -g -DMUSHFIQ_DEBUG -DDBG_MACRO_NO_WARNING % -o %:r && ./%:r<CR>
+autocmd filetype cpp inoremap <F10> <ESC>:w \| !g++ -std=c++17 -Wall -g -DMUSHFIQ_DEBUG -DDBG_MACRO_NO_WARNING % -o %:r && ./%:r<CR>
 
+autocmd filetype python nnoremap <F9> :w \| !python3 %<CR>
+autocmd filetype python inoremap <F9> <ESC>:w \| !python3 %<CR>
+
+" cp-booster
 inoremap <F7> <ESC>:Test<CR>
 nnoremap <F7> :Test<CR>
 vnoremap <F7> :Test<CR>
@@ -56,18 +60,19 @@ set relativenumber
 set tabstop=2
 set shiftwidth=2
 set expandtab
-set noerrorbells
 set softtabstop=2
 set smartindent
 set smarttab
 set autoindent
 set cindent
+set noerrorbells
 set ruler
 set guifont=*
 set backspace=indent,eol,start
 set ignorecase
 set incsearch
 set nowrap
+set hlsearch
 
 " bubt site
 " set termguicolors
@@ -88,8 +93,6 @@ endif
 
 nnoremap <S-j> :m .+1<CR>==
 nnoremap <S-k> :m .-2<CR>==
-inoremap <S-j> <Esc>:m .+1<CR>==gi
-inoremap <S-k> <Esc>:m .-2<CR>==gi
 vnoremap <S-j> :m '>+1<CR>gv==gv
 vnoremap <S-k> :m '<-2<CR>gv==gv
 
@@ -118,7 +121,7 @@ Plugin 'vim-scripts/a.vim'
 Plugin 'git://git.wincent.com/command-t.git'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 if !has('nvim')
-"  Plugin 'ycm-core/YouCompleteMe'
+  Plugin 'ycm-core/YouCompleteMe'
 endif
 Plugin 'gruvbox-community/gruvbox'
 Plugin 'vim-utils/vim-man'
@@ -126,6 +129,12 @@ Plugin 'sainnhe/gruvbox-material'
 Plugin 'phanviet/vim-monokai-pro'
 Plugin 'ajh17/VimCompletesMe'
 Plugin 'alvan/vim-closetag'
+Plugin 'searleser97/cpbooster.vim'
+Plugin 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+" Plugin 'neoclide/coc.nvim', {'branch': 'release'}
+
+" Plugin 'jiangmiao/auto-pairs'
+" Plugin 'pseewald/vim-anyfold'
 
 " Color Schemes
 Plugin 'tomasr/molokai'
@@ -166,15 +175,6 @@ let g:syntastic_cpp_compiler_options = '-Wall'
 
 colorscheme gruvbox
 set background=dark
-
-call plug#begin()
-Plug 'searleser97/cpbooster.vim'
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-" Plug 'tribela/vim-transparent'
-Plug 'ycm-core/YouCompleteMe'
-" Plug 'jiangmiao/auto-pairs'
-" Plug 'pseewald/vim-anyfold'
-call plug#end()
 
 " filenames like *.xml, *.html, *.xhtml, ...
 " These are the file extensions where this plugin is enabled.
@@ -218,3 +218,5 @@ let g:closetag_shortcut = '>'
 " Add > at current position without closing the current tag, default is ''
 "
 let g:closetag_close_shortcut = '<leader>>'
+
+let g:python3_host_prog = '/usr/bin/python3'
