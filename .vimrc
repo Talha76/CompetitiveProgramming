@@ -2,7 +2,7 @@ nmap <F5> :NERDTreeToggle<CR>
 " nnoremap <silent> <expr> <F5> g:NERDTree.IsOpen() ? "\:NERDTreeClose<CR>" : bufexists(expand('%')) ? "\:NERDTreeFind<CR>" : "\:NERDTree<CR>"
 
 " Auto import & Compile
-" :autocmd BufNewFile *.cpp 0r ~/template.cpp
+:autocmd BufNewFile *.cpp 0r ~/template.cpp
 
 autocmd filetype cpp nnoremap <F9>  :w \| !g++ -std=gnu++2a -Wall -g % -o %:r && ./%:r<CR>
 autocmd filetype cpp inoremap <F9>  <ESC>:w \| !g++ -std=gnu++2a -Wall -g % -o %:r && ./%:r<CR>
@@ -220,3 +220,4 @@ let g:closetag_shortcut = '>'
 let g:closetag_close_shortcut = '<leader>>'
 
 let g:python3_host_prog = '/usr/bin/python3'
+

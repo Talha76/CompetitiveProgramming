@@ -1,38 +1,5 @@
 [
 	{
-		"_id": "c1a1b669-bbd7-4852-abf9-83c76bc63b94",
-		"code": "const LL mod = 998244353;\n\nLL bigmod(LL a, LL p) {\n  LL ret = 1;\n  for(; p; p >>= 1, a = (a*a) % mod) {\n    if(p & 1)\n      ret = (ret * a) % mod;\n  }\n  return ret;\n}\n\nLL inv_mod(int a) { return bigmod(a, mod - 2); }\n\nLL ncr(int n, int r) {\n  LL ret = 1, denom = 1;\n  for(int i = n; i > n - r; i--)\n    ret = (ret * i) % mod;\n  for(int i = 1; i <= r; i++)\n    denom = (denom * i) % mod;\n  return (ret * inv_mod(denom)) % mod;\n}\n\nvoid magic() {\n  int n;\n  cin >> n;\n\n  LL total = ncr(n, n / 2);\n  LL alex = 0;\n  for(int p = n - 1, q = n/2 - 1; p > 0 and q >= 0; p -= 4, q -= 2)\n    alex = (alex + ncr(p, q) + ncr(p + 1, q)) % mod;\n  alex = (alex - ncr(n, n/2 - 1) + mod) % mod;\n\n  LL boris = (total - 1 - alex + mod) % mod;\n\n  cout << alex << \" \" << boris << \" 1\";\n}",
-		"date": "2022-10-09T16:00:00.960Z",
-		"difficulty": 1500,
-		"folder": "codeforces",
-		"link": "https://codeforces.com/problemset/problem/1739/C",
-		"name": "Card Game",
-		"notes": "Combinatorics Observation needed",
-		"tags": [
-			"combinatorics",
-			"constructive algorithms",
-			"dp",
-			"games"
-		]
-	},
-	{
-		"_id": "9b68978c-8a92-4bee-b77e-b2dc98f88c1e",
-		"code": "void magic() {\n  int n; string s;\n  cin >> n >> s;\n\n  vector<int> b;\n  for(int i = 0, j = 48; i < n; i++) {\n    if(s[2*i] ^ s[2*i + 1]) {\n      b.push_back(s[2*i] == j ? 2*i : 2*i + 1);\n      j ^= 1;\n    }\n  }\n\n  if(b.size() & 1) {\n    cout << -1;\n  } else {\n    cout << b.size() << \" \";\n    for(auto i : b)\n      cout << i + 1 << \" \";\n    cout << \"\\n\";\n    for(int i = 1; i < 2*n; i += 2)\n      cout << i << \" \";\n  }\n}",
-		"date": "2022-10-15T05:23:31.903Z",
-		"difficulty": 0,
-		"folder": "codeforces",
-		"link": "https://codeforces.com/contest/1736/problem/D",
-		"name": "Equal Binary Subsequences",
-		"notes": "",
-		"tags": [
-			"constructive algorithms",
-			"geometry",
-			"greedy",
-			"implementation",
-			"strings"
-		]
-	},
-	{
 		"_id": "3f2e7505-6611-428a-84cd-d1a64980c996",
 		"code": "vector<vector<int>> adj;\nvector<int> ord, d, d_ancestor, st, vis;\n\nvoid build(int n, int h) {\n  st.push_back(n);\n  if(d[n] >= h)\n    d_ancestor[n] = st[d[n] - h];\n  for(auto i : adj[n])\n    build(i, h);\n  st.pop_back();\n}\n\nvoid dfs(int node) {\n  vis[node] = true;\n  for(auto i : adj[node]) {\n    if(not vis[i])\n      dfs(i);\n  }\n}\n\nint f(int h, const int n) {\n  d_ancestor.assign(n, -1);\n  vis.assign(n, 0);\n  build(0, h - 1);\n  int ret = 0;\n  for(auto i : ord) {\n    if(not vis[i] and d[i] > h) {\n      ret++;\n      dfs(d_ancestor[i]);\n    }\n  }\n  return ret;\n}\n\nvoid find_ord() {\n  queue<int> q;\n  for(q.push(0); q.size(); ) {\n    int n = q.front(); q.pop();\n    ord.push_back(n);\n    for(auto i : adj[n]) {\n      d[i] = d[n] + 1;\n      q.push(i);\n    }\n  }\n  reverse(all(ord));\n}\n\nvoid magic() {\n  int n, k, p;\n  cin >> n >> k;\n  adj.assign(n, vector<int>());\n  d.assign(n, 0);\n  for(int i = 1; i < n; i++) {\n    cin >> p;\n    p--;\n    adj[p].push_back(i);\n  }\n\n  find_ord();\n\n  int lo = 0, hi = n;\n  while(hi - lo > 1) {\n    int m = (hi + lo) >> 1;\n    (f(m, n) > k ? lo : hi) = m;\n  }\n\n  cout << hi;\n  adj.clear(); ord.clear(); d.clear();\n}",
 		"date": "2022-10-15T18:18:15.533Z",
@@ -336,6 +303,130 @@
 			"math",
 			"sortings",
 			"strings"
+		]
+	},
+	{
+		"_id": "a1d215bb-ded0-4809-a2ef-b575c291f603",
+		"code": "struct point {\n  int x, y;\n  point() : x(0), y(0) {}\n  point(int x, int y) : x(x), y(y) {}\n  point operator + (const point &a) const {\n    return point(x + a.x, y + a.y);\n  }\n  int operator - (const point &a) const {\n    return abs(a.x - x) + abs(a.y - y);\n  }\n  bool operator < (const point &a) const {\n    if (x == a.x) return y < a.y;\n    return x < a.x;\n  }\n  friend istream& operator >> (istream &in, point &p) {\n    in >> p.x >> p.y;\n    return in;\n  }\n  friend ostream& operator << (ostream &os, point &p) {\n    os << p.x << \" \" << p.y;\n    return os;\n  }\n};\n \nvector <point> dir{{1, 0}, {0, 1}, {-1, 0}, {0, -1}};\n \nint main() {\n  cin.tie(NULL)->sync_with_stdio(false);\n  int n;\n  cin >> n;\n  vector <point> a(n);\n  for (auto &i : a) cin >> i;\n  set <point> st(a.begin(), a.end());\n \n  queue <point> q;\n  map <point, point> ans;\n  for (auto p : a) {\n    for (auto i : dir) if (not st.contains(p + i)) {\n      q.push(p + i);\n      ans[p + i] = p + i;\n      break;\n    }\n  }\n \n  for (; q.size(); q.pop()) {\n    point p = q.front();\n    for (auto i : dir) {\n      if (not st.contains(p + i)) continue;\n      if (not ans.contains(p + i)) {\n        ans[p + i] = ans[p];\n        q.push(p + i);\n      }\n    }\n  }\n \n  for (auto i : a) cout << ans[i] << \"\\n\";\n \n  return 0;\n}",
+		"date": "2023-02-02T06:40:20.489Z",
+		"difficulty": 1900,
+		"folder": "codeforces",
+		"link": "https://codeforces.com/contest/1651/problem/D",
+		"name": "Nearest Excluded Points",
+		"notes": "Think reverse. If we know the excluded points,\nwe can easily figure out the closest points.",
+		"tags": [
+			"binary search",
+			"data structures",
+			"dfs and similar",
+			"graphs",
+			"shortest paths"
+		]
+	},
+	{
+		"_id": "dcdb8fb3-dee0-4bc7-aa25-acb7710ec096",
+		"code": "Find the person who has more than (m+1)/2 affiliations.\nSo, now we can find some persons for his replacement.",
+		"date": "2023-02-05T15:20:10.326Z",
+		"difficulty": 1600,
+		"folder": "codeforces",
+		"link": "https://codeforces.com/contest/1482/problem/C",
+		"name": "Basic Diplomacy",
+		"notes": "",
+		"tags": [
+			"brute force",
+			"constructive algorithms",
+			"greedy",
+			"implementation"
+		]
+	},
+	{
+		"_id": "7975b168-f82b-4dc8-a48c-5e27747c1596",
+		"code": "Binary search on the answer such that, the median is at least x given the conditions.",
+		"date": "2023-02-05T16:44:12.095Z",
+		"difficulty": 2100,
+		"folder": "codeforces",
+		"link": "https://codeforces.com/contest/1486/problem/D",
+		"name": "Max Median",
+		"notes": "",
+		"tags": [
+			"binary search",
+			"data structures",
+			"dp"
+		]
+	},
+	{
+		"_id": "9569a164-b55a-4359-9e9a-ec829bac323a",
+		"code": "Check for all the indices if starting from this index gives the maximum answer",
+		"date": "2023-02-10T13:29:16.913Z",
+		"difficulty": 1900,
+		"folder": "codeforces",
+		"link": "https://codeforces.com/contest/1791/problem/G2",
+		"name": "Teleporters (Hard Version)",
+		"notes": "",
+		"tags": [
+			"binary search",
+			"greedy",
+			"sortings"
+		]
+	},
+	{
+		"_id": "d63f7c76-1c9a-43aa-a983-7eedb3b07daf",
+		"code": "Observe just only for 1's and 0's.\n1. We can use 3 1's to make 3 1's to 0's.\n2. 2 1's can't do anything.\n1. 1 '1' can make 2 1's.\nExtend this for all the bits.",
+		"date": "2023-02-13T19:13:20.755Z",
+		"difficulty": 2256,
+		"folder": "codechef",
+		"link": "https://www.codechef.com/problems/TRIXOR",
+		"name": "Tri XOR - Problems",
+		"notes": "",
+		"tags": [
+			"adhoc",
+			"constructive algo",
+			"bitmasking"
+		]
+	},
+	{
+		"_id": "c1a1b669-bbd7-4852-abf9-83c76bc63b94",
+		"code": "const LL mod = 998244353;\n\nLL bigmod(LL a, LL p) {\n  LL ret = 1;\n  for(; p; p >>= 1, a = (a*a) % mod) {\n    if(p & 1)\n      ret = (ret * a) % mod;\n  }\n  return ret;\n}\n\nLL inv_mod(int a) { return bigmod(a, mod - 2); }\n\nLL ncr(int n, int r) {\n  LL ret = 1, denom = 1;\n  for(int i = n; i > n - r; i--)\n    ret = (ret * i) % mod;\n  for(int i = 1; i <= r; i++)\n    denom = (denom * i) % mod;\n  return (ret * inv_mod(denom)) % mod;\n}\n\nvoid magic() {\n  int n;\n  cin >> n;\n\n  LL total = ncr(n, n / 2);\n  LL alex = 0;\n  for(int p = n - 1, q = n/2 - 1; p > 0 and q >= 0; p -= 4, q -= 2)\n    alex = (alex + ncr(p, q) + ncr(p + 1, q)) % mod;\n  alex = (alex - ncr(n, n/2 - 1) + mod) % mod;\n\n  LL boris = (total - 1 - alex + mod) % mod;\n\n  cout << alex << \" \" << boris << \" 1\";\n}",
+		"date": "2023-02-20T04:43:50.355Z",
+		"difficulty": 1500,
+		"folder": "codeforces",
+		"link": "https://codeforces.com/problemset/problem/1739/C",
+		"name": "Card Game",
+		"notes": "Combinatorics Observation needed.\nOnly Draw is for 'BAABBAABB......'",
+		"tags": [
+			"combinatorics",
+			"constructive algorithms",
+			"dp",
+			"games"
+		]
+	},
+	{
+		"_id": "9b68978c-8a92-4bee-b77e-b2dc98f88c1e",
+		"code": "void magic() {\n  int n; string s;\n  cin >> n >> s;\n\n  vector<int> b;\n  for(int i = 0, j = 48; i < n; i++) {\n    if(s[2*i] ^ s[2*i + 1]) {\n      b.push_back(s[2*i] == j ? 2*i : 2*i + 1);\n      j ^= 1;\n    }\n  }\n\n  if(b.size() & 1) {\n    cout << -1;\n  } else {\n    cout << b.size() << \" \";\n    for(auto i : b)\n      cout << i + 1 << \" \";\n    cout << \"\\n\";\n    for(int i = 1; i < 2*n; i += 2)\n      cout << i << \" \";\n  }\n}",
+		"date": "2023-02-20T05:50:25.891Z",
+		"difficulty": 0,
+		"folder": "codeforces",
+		"link": "https://codeforces.com/contest/1736/problem/D",
+		"name": "Equal Binary Subsequences",
+		"notes": "Just try to make adjacent pairs of equal elements.",
+		"tags": [
+			"constructive algorithms",
+			"geometry",
+			"greedy",
+			"implementation",
+			"strings"
+		]
+	},
+	{
+		"_id": "61c0b228-20b3-4eb5-b2e1-96ec4b1f0142",
+		"code": "int n;\ncin >> n;\nvector <PCI> a(n);\nvector <int> L, G;\nfor (auto &[c, i] : a) {\n    cin >> c >> i;\n    if (c == 'G') G.push_back(i);\n    else          L.push_back(i);\n}\n\nint ans = 10000;\nsort(all(L)); sort(all(G));\nfor (int i = 0; i < L.size(); i++) {\n    int cnt = i + (G.end() - upper_bound(all(G), L[i]));\n    ans = min(ans, cnt);\n}\ncout << ans;",
+		"date": "2023-02-21T08:32:03.559Z",
+		"difficulty": 2,
+		"folder": "USACO",
+		"link": "http://usaco.org/index.php?page=viewproblem2&cpid=1228",
+		"name": "Counting Liars",
+		"notes": "Can be done in O(nlog(n)) by sorting out L's and G's differently.\nThen only search for the p[i] of L's.",
+		"tags": [
+			"brute force"
 		]
 	}
 ]
